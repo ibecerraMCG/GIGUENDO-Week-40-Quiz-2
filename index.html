@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 40 Practice Quiz 2</title>
+
+    <style>
+        /* --- CSS Variables & Themes --- */
+        :root {
+            --transition-speed: 0.3s;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Default Feedback Colors (Fallback for custom themes) */
+            --feedback-success-bg: #064e3b;
+            --feedback-success-border: #059669;
+            --feedback-success-text: #a7f3d0;
+            --feedback-error-bg: #7f1d1d;
+            --feedback-error-border: #dc2626;
+            --feedback-error-text: #fecaca;
+        }[data-theme="dark"] {
+            --bg-body: #1e293b; --bg-card: #334155; --bg-header: #0f172a;
+            --text-main: #f1f5f9; --text-muted: #94a3b8; --text-accent: #38bdf8;
+            --border-color: #475569; --highlight-bg: #475569;
+            --button-bg: #38bdf8; --button-text: #0f172a; --button-hover: #0ea5e9;
+        }
+
+        [data-theme="light"] {
+            --bg-body: #f3f4f6; --bg-card: #ffffff; --bg-header: #ffffff;
+            --text-main: #1f2937; --text-muted: #6b7280; --text-accent: #2563eb;
+            --border-color: #e5e7eb; --highlight-bg: #f3f4f6;
+            --button-bg: #2563eb; --button-text: #ffffff; --button-hover: #1d4ed8;
+            --feedback-success-bg: #ecfdf5; --feedback-success-border: #34d399; --feedback-success-text: #065f46;
+            --feedback-error-bg: #fef2f2; --feedback-error-border: #f87171; --feedback-error-text: #991b1b;
+        }
+
+        [data-theme="midnight"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #e0e0e0; --text-muted: #888888; --text-accent: #90caf9;
+            --border-color: #333333; --highlight-bg: #1a1a1a;
+            --button-bg: #90caf9; --button-text: #000000; --button-hover: #42a5f5;
+            --feedback-success-bg: #051b11; --feedback-success-border: #0f5132; --feedback-success-text: #75b798;
+            --feedback-error-bg: #2c0b0e; --feedback-error-border: #842029; --feedback-error-text: #ea868f;
+        }[data-theme="legacy-dark"] {
+            --bg-body: #2d343e; --bg-card: #3c424f; --bg-header: #3c424f;
+            --text-main: #e8e6e3; --text-muted: #b0c4de; --text-accent: #8ab4f8;
+            --border-color: #555; --highlight-bg: #454c5a;
+            --button-bg: #8ab4f8; --button-text: #202124; --button-hover: #a3c5f9;
+            --feedback-success-bg: #344e41; --feedback-success-border: #52b788; --feedback-success-text: #c7f9cc;
+            --feedback-error-bg: #5e2129; --feedback-error-border: #a4133c; --feedback-error-text: #f8d7da;
+        }
+
+        [data-theme="sepia"] {
+            --bg-body: #f4ecd8; --bg-card: #fdf6e3; --bg-header: #e4d5b7;
+            --text-main: #433422; --text-muted: #7c6f5a; --text-accent: #a05a2c;
+            --border-color: #d3c4a5; --highlight-bg: #ebe1c9;
+            --button-bg: #a05a2c; --button-text: #fdf6e3; --button-hover: #864822;
+            --feedback-success-bg: #e6f4ea; --feedback-success-border: #8ab893; --feedback-success-text: #2e4c35;
+            --feedback-error-bg: #f9e3e3; --feedback-error-border: #d48f8f; --feedback-error-text: #5c2b2b;
+        }[data-theme="contrast"] {
+            --bg-body: #000000; --bg-card: #000000; --bg-header: #000000;
+            --text-main: #ffffff; --text-muted: #dddddd; --text-accent: #ffff00;
+            --border-color: #ffffff; --highlight-bg: #333333;
+            --button-bg: #ffff00; --button-text: #000000; --button-hover: #e6e600;
+            --feedback-success-bg: #000000; --feedback-success-border: #00ff00; --feedback-success-text: #00ff00;
+            --feedback-error-bg: #000000; --feedback-error-border: #ff0000; --feedback-error-text: #ff0000;
+        }
+
+        /* --- Global Reset & Layout --- */
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-main);
+            margin: 0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            line-height: 1.6;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--bg-header);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header.unpinned { position: relative; box-shadow: none; }
+
+        .header-top {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; flex-wrap: wrap; gap: 15px;
+        }
+
+        header h1 { font-size: 1.5rem; margin: 0; color: var(--text-accent); font-weight: 700; }
+
+        .controls-wrapper { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+
+        /* --- Custom Theme Builder --- */
+        .custom-builder {
+            display: none; flex-wrap: wrap; gap: 15px;
+            background-color: var(--bg-card); padding: 10px 15px;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            margin-top: 5px; font-size: 0.85rem; animation: fadeIn 0.3s;
+            width: 100%; justify-content: flex-end;
+        }
+        .custom-builder.active { display: flex; }
+        .color-picker-group { display: flex; align-items: center; gap: 8px; }
+        .color-picker-group input[type="color"] {
+            border: none; width: 25px; height: 25px; border-radius: 4px;
+            cursor: pointer; padding: 0; background: none;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Controls --- */
+        .header-btn {
+            background-color: var(--highlight-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-btn:hover {
+            border-color: var(--text-accent);
+            color: var(--text-accent);
+        }
+
+        .pin-btn {
+            background: none; border: 1px solid var(--border-color); color: var(--text-main);
+            cursor: pointer; padding: 0 10px; border-radius: 6px; font-size: 1rem;
+            transition: background-color 0.2s; height: 34px; display: flex;
+            align-items: center; justify-content: center;
+        }
+        .pin-btn:hover { background-color: var(--highlight-bg); }
+        .pin-btn.pin-active { background-color: rgba(0, 0, 0, 0.1); }
+
+        select#theme-select {
+            padding: 0 12px; border-radius: 6px; border: 1px solid var(--border-color);
+            background-color: var(--bg-card); color: var(--text-main);
+            cursor: pointer; font-family: inherit; height: 34px;
+        }
+
+        /* --- Section Navigation --- */
+        .section-nav { display: flex; gap: 10px; flex-wrap: wrap; }
+        .section-nav button {
+            background-color: var(--highlight-bg); color: var(--text-main);
+            border: 1px solid var(--border-color); padding: 6px 12px;
+            border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .section-nav button:hover { border-color: var(--text-accent); color: var(--text-accent); }
+
+        /* --- Main Content --- */
+        .container {
+            max-width: 850px;
+            margin: 2rem auto;
+            padding: 0 1rem 4rem 1rem;
+        }
+
+        .section-header {
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--text-accent);
+            color: var(--text-accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            scroll-margin-top: 150px; /* Offset for sticky header */
+        }
+
+        /* --- Question Card --- */
+        .question-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+
+        .lo-box {
+            background-color: var(--highlight-bg);
+            border-left: 4px solid var(--text-accent);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-style: italic;
+            display: none; /* Hidden by default */
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Options --- */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: var(--highlight-bg);
+            border-color: var(--text-muted);
+        }
+
+        .option-label input {
+            margin-top: 0.3rem;
+            margin-right: 1rem;
+            accent-color: var(--text-accent);
+            transform: scale(1.2);
+        }
+
+        /* --- Buttons --- */
+        .btn-check {
+            margin-top: 1.5rem;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-check:hover {
+            opacity: 0.9;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-link:hover {
+            opacity: 0.9;
+        }
+
+        /* --- Feedback Area --- */
+        .feedback {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none;
+            border: 1px solid transparent;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback.correct {
+            background-color: var(--feedback-success-bg);
+            border-color: var(--feedback-success-border);
+            color: var(--feedback-success-text);
+        }
+
+        .feedback.incorrect {
+            background-color: var(--feedback-error-bg);
+            border-color: var(--feedback-error-border);
+            color: var(--feedback-error-text);
+        }
+
+        .feedback-header {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .rationale {
+            margin-top: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .source {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            font-style: italic;
+            border-top: 1px dashed currentColor;
+            padding-top: 0.5rem;
+        }
+
+        /* --- Mobile Tweaks --- */
+        @media (max-width: 768px) {
+            .header-top { flex-direction: column; align-items: flex-start; }
+            .controls-wrapper { width: 100%; justify-content: flex-start; }
+            .section-nav { justify-content: flex-start; }
+            .custom-builder { justify-content: flex-start; }
+            header h1 { font-size: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header id="main-header">
+        <div class="header-top">
+            <h1>Week 40 Practice Quiz 2</h1>
+            <div class="controls-wrapper">
+                
+                <!-- Reveal LOs Button in Header -->
+                <button id="reveal-all-btn" class="header-btn" onclick="toggleAllLOs()">Show Learning Objectives</button>
+                
+                <!-- Pin Button -->
+                <button class="pin-btn pin-active" id="pin-btn" onclick="toggleHeader()" title="Pin/Unpin Header">📌</button>
+                
+                <!-- Theme Selector -->
+                <div class="theme-control">
+                    <select id="theme-select" onchange="changeTheme(this.value)">
+                        <option value="dark">Modern Dark</option>
+                        <option value="midnight">Midnight</option>
+                        <option value="light">Modern Light</option>
+                        <option value="legacy-dark">Legacy Dark</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="contrast">High Contrast</option>
+                        <option value="custom">⚙️ Custom...</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Custom Theme Color Pickers -->
+            <div class="custom-builder" id="custom-builder">
+                <div class="color-picker-group">
+                    <label>Background:</label>
+                    <input type="color" id="color-bg" value="#1a1a2e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Cards:</label>
+                    <input type="color" id="color-card" value="#16213e" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Text:</label>
+                    <input type="color" id="color-text" value="#e94560" oninput="updateCustomTheme()">
+                </div>
+                <div class="color-picker-group">
+                    <label>Accent:</label>
+                    <input type="color" id="color-accent" value="#0f3460" oninput="updateCustomTheme()">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dynamic Navigation Bar -->
+        <div class="section-nav" id="section-nav"></div>
+    </header>
+
+    <div class="container">
+        
+        <div id="quiz-root">
+            <!-- Content injected via JS -->
+        </div>
+
+    </div>
+
+    <script>
+        // --- Data ---
+        const quizData =[
+            // --- Section 1: Development of the Urinary System ---
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO1: Discuss the pronephros and mesonephros. Describe the formation and development of mesonephric ducts and tubules. Describe what happens to the mesonephric structures during development.",
+                question: "A 25-year-old man undergoes evaluation for infertility. Semen analysis reveals azoospermia. Imaging demonstrates a congenital bilateral absence of the ductus deferens and epididymis. The embryologic structure that normally gives rise to these missing anatomical features is the:",
+                options: {
+                    A: "Cloaca",
+                    B: "Mesonephric duct",
+                    C: "Metanephric blastema",
+                    D: "Pronephric duct",
+                    E: "Ureteric bud"
+                },
+                correctAnswer: "B",
+                rationale: "In males, the mesonephric duct persists and differentiates into the epididymis and the ductus deferens.",
+                source: "Development of the Urinary System PDF, Page 48: 'In males: a few of the caudal tubules & the mesonephric ducts persist and are incorporated into the genital system... Mesonephric duct → Epididymis & ductus deferens'"
+            },
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO1: Discuss the pronephros and mesonephros. Describe the formation and development of mesonephric ducts and tubules. Describe what happens to the mesonephric structures during development.",
+                question: "An embryologist is studying the early stages of human kidney development. At week 6 of gestation, she identifies a pair of large, elongated excretory organs in the upper thoracic to upper lumbar regions that are producing small amounts of urine. By week 12, these organs cease functioning and regress. Which of the following structures is she observing?",
+                options: {
+                    A: "Allantois",
+                    B: "Mesonephros",
+                    C: "Metanephros",
+                    D: "Pronephros",
+                    E: "Urorectal septum"
+                },
+                correctAnswer: "B",
+                rationale: "The mesonephros is the second set of kidneys, appearing late in week 4. It contains mesonephric tubules and glomeruli that become functional by week 6 to produce small amounts of urine. The mesonephric kidneys stop functioning and regress around week 12.",
+                source: "Development of the Urinary System PDF, Page 47-48: 'Mesonephros – The Second Set of Kidneys... Mesonephric excretory units become functional by week 6... producing small amounts of urine... Mesonephric kidneys stops functioning and regress around week 12.'"
+            },
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO2: Discuss the metanephros. Describe the development of the collecting system of the kidney, including outgrowth and branching development of the ureteric bud, and identify its derivatives. Describe the development of the excretory system of the kidney, including induction of the metanephric blastema and differentiation of the nephron.",
+                question: "A female newborn undergoes ultrasound evaluation due to an abnormal prenatal scan. The ultrasound reveals a congenital malformation in which the minor calyces, major calyces, and renal pelvis have completely failed to develop. This anomaly most likely originated from a failure of differentiation in which of the following embryologic structures?",
+                options: {
+                    A: "Mesonephric tubules",
+                    B: "Metanephric blastema",
+                    C: "Pronephric duct",
+                    D: "Ureteric bud",
+                    E: "Urogenital sinus"
+                },
+                correctAnswer: "D",
+                rationale: "The ureteric bud is an epithelial outgrowth from the mesonephric duct. Its differentiation gives rise to the entire collecting duct system of the kidneys, which includes the ureter, renal pelvis, major and minor calyces, and collecting tubules.",
+                source: "Development of the Urinary System PDF, Page 48: 'Differentiation of the ureteric bud gives rise to the collecting duct system of the kidneys, which includes the ureter, renal pelvis, major & minor calyces, and eventually 1-3 million collecting tubules.'"
+            },
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO2: Discuss the metanephros. Describe the development of the collecting system of the kidney, including outgrowth and branching development of the ureteric bud, and identify its derivatives. Describe the development of the excretory system of the kidney, including induction of the metanephric blastema and differentiation of the nephron.",
+                question: "A researcher is studying the process of reciprocal induction during the development of the permanent kidney (metanephros). He observes that the metanephric blastema receives signals from the ureteric bud, prompting the blastema cells to form renal vesicles that elongate into S-shaped tubules. Which of the following anatomical structures is directly derived from the metanephric blastema?",
+                options: {
+                    A: "Collecting tubule",
+                    B: "Major calyx",
+                    C: "Proximal convoluted tubule",
+                    D: "Renal pelvis",
+                    E: "Ureter"
+                },
+                correctAnswer: "C",
+                rationale: "The metanephric blastema gives rise to the excretory units of the kidney, known as nephrons. The nephron consists of Bowman's capsule, the proximal convoluted tubule, the loop of Henle, and the distal convoluted tubule. The collecting system (options A, B, D, E) is derived from the ureteric bud.",
+                source: "Development of the Urinary System PDF, Page 49: 'As the renal corpuscle develops, the S-shaped nephric tubule continues to lengthen and differentiates into the remaining elements of the nephron: the proximal & distal convoluted tubules and the loop of Henle.'"
+            },
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO3: Describe the “ascent” of the kidneys along with their shifting vascular supply and positional orientation as they move from the pelvis to the abdomen. Explain why development of the suprarenal gland has an impact on kidney location.",
+                question: "During a routine anatomical dissection, a medical student discovers that a cadaver's left kidney is located in the pelvic cavity rather than in the upper retroperitoneal space. The right kidney is in its normal anatomical position. The failure of the left kidney to ascend normally was most likely caused by an obstruction created by which of the following structures?",
+                options: {
+                    A: "Celiac trunk",
+                    B: "Common iliac vein",
+                    C: "Superior mesenteric artery",
+                    D: "Umbilical arteries",
+                    E: "Urorectal septum"
+                },
+                correctAnswer: "D",
+                rationale: "Pelvic kidneys occur when a kidney fails to ascend out of the pelvic cavity. During their normal ascent, kidneys must pass through the arterial fork formed by the umbilical arteries. If a kidney fails to pass this fork, it becomes stuck in the pelvis.",
+                source: "Development of the Urinary System PDF, Page 54: 'Pelvic Kidneys – kidneys do not ascend out of the pelvic cavity. During their ascent, the kidneys pass through the arterial fork formed by the umbilical arteries. If it fails to do so, it becomes stuck in the pelvis close to the common iliac artery.'"
+            },
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO3: Describe the “ascent” of the kidneys along with their shifting vascular supply and positional orientation as they move from the pelvis to the abdomen. Explain why development of the suprarenal gland has an impact on kidney location.",
+                question: "A 45-year-old man undergoes abdominal surgery. During the procedure, the surgeon identifies an extra artery supplying the lower pole of the right kidney directly from the abdominal aorta. The surgeon accidentally ligates this artery. Which of the following is the most likely consequence of ligating this specific vessel?",
+                options: {
+                    A: "Compensatory hypertrophy of the adrenal gland",
+                    B: "Dilation of the ipsilateral ureter",
+                    C: "Necrosis of the supplied kidney parenchyma",
+                    D: "Reflux of urine into the renal pelvis",
+                    E: "Shunting of blood to the contralateral kidney"
+                },
+                correctAnswer: "C",
+                rationale: "Accessory renal arteries (supernumerary arteries) are common and represent embryonic blood supply that failed to degenerate during the kidney's ascent. Because they are \"end arteries\" (meaning they do not anastomose with neighboring arteries), damaging or ligating them results in necrosis of the kidney parenchyma they supply.",
+                source: "Development of the Urinary System PDF, Page 50: 'Accessory renal arteries are called supernumerary arteries. They are end arteries (arteries that don’t anastomose with neighboring arteries), so damage to them will result in necrosis of kidney parenchyma.'"
+            },
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO4: Discuss the importance of urine production by the fetal kidneys and congenital anomalies that commonly lead to oligohydramnios.",
+                question: "A newborn infant is evaluated immediately after birth due to severe respiratory distress. Physical examination reveals an abnormal facial appearance, clubbed feet, and wrinkled, dry skin. The mother had poor prenatal care, but an ultrasound obtained shortly before delivery demonstrated severely decreased amniotic fluid. Which of the following congenital anomalies is the most likely primary cause of this infant's presentation?",
+                options: {
+                    A: "Bilateral renal agenesis",
+                    B: "Epispadias",
+                    C: "Horseshoe kidney",
+                    D: "Patent urachus",
+                    E: "Unilateral renal agenesis"
+                },
+                correctAnswer: "A",
+                rationale: "The infant presents with Potter syndrome (abnormal facies, limb deformities, wrinkly skin, pulmonary hypoplasia). Potter syndrome is caused by oligohydramnios (insufficient amniotic fluid) due to a lack of fetal urine production. Bilateral renal agenesis results in the complete absence of fetal urine, leading to this severe sequence of anomalies.",
+                source: "Development of the Urinary System PDF, Page 53: 'Bilateral renal agenesis... Associated with oligohydramnios (insufficient amniotic fluid) because urine is not excreted into the amniotic cavity... Insufficient amniotic fluid allows the uterine wall to compress the growing fetus, causing a range of abnormalities called Potter syndrome (an abnormal facial appearance, skeletal deformation, wrinkly, dry skin, and hypoplastic lung development).'"
+            },
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO4: Discuss the importance of urine production by the fetal kidneys and congenital anomalies that commonly lead to oligohydramnios.",
+                question: "A fetus is diagnosed via ultrasound with complete bilateral renal agenesis. Despite the absence of kidneys, ultrasound demonstrates that the fetus maintains normal blood levels of metabolic waste products throughout gestation. Which of the following structures is primarily responsible for clearing metabolic wastes from the fetal blood in this condition?",
+                options: {
+                    A: "Allantois",
+                    B: "Amniotic membrane",
+                    C: "Fetal liver",
+                    D: "Placenta",
+                    E: "Yolk sac"
+                },
+                correctAnswer: "D",
+                rationale: "While fetal kidneys produce urine that forms amniotic fluid, they are not primarily responsible for clearing metabolic wastes. The placenta clears waste products out of the fetal blood, allowing a fetus with bilateral renal agenesis to survive until birth (when the umbilical cord is cut).",
+                source: "Development of the Urinary System PDF, Page 49: 'While the fetal kidneys produce urine throughout the remainder of gestation, it is the placenta that primarily clears waste products out of the blood... Since it is the placenta that is primarily clearing the waste from the fetus, the fetus can survive without kidneys up until the time of birth'"
+            },
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO5: Discuss the development of the suprarenal glands.",
+                question: "A 35-year-old woman presents with severe hypertension, headaches, and palpitations. Imaging identifies a tumor confined to the inner medullary region of her left adrenal (suprarenal) gland. The cells comprising this tumor secrete catecholamines. These specific tumor cells are embryologically derived from which of the following?",
+                options: {
+                    A: "Endoderm",
+                    B: "Intermediate mesoderm",
+                    C: "Neural crest cells",
+                    D: "Paraxial mesoderm",
+                    E: "Splanchnic mesoderm"
+                },
+                correctAnswer: "C",
+                rationale: "The suprarenal gland has a dual embryonic origin. The cortex develops from intermediate mesoderm, whereas the medulla develops from neural crest cells (derived from adjacent sympathetic ganglia) which differentiate into chromaffin cells.",
+                source: "Development of the Urinary System PDF, Page 50: 'The cortex and medulla of the suprarenal gland have different embryonic origins. 1. Cortex – develops from intermediate mesoderm 2. Medulla – develops from neural crest cells'"
+            },
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO5: Discuss the development of the suprarenal glands.",
+                question: "A female infant is born with ambiguous genitalia characterized by clitoromegaly and fusion of the labioscrotal folds. Laboratory testing reveals excessive androgen production. The pediatric endocrinologist suspects a congenital abnormality involving an overgrown layer of the suprarenal gland that normally produces steroid precursors for the placenta. Which of the following layers is responsible for this patient's condition?",
+                options: {
+                    A: "Adult suprarenal medulla",
+                    B: "Definitive suprarenal cortex",
+                    C: "Fetal suprarenal cortex",
+                    D: "Urogenital ridge",
+                    E: "Zona glomerulosa"
+                },
+                correctAnswer: "C",
+                rationale: "The fetal suprarenal cortex is extensively large and normally produces steroid precursors used by the placenta for estrogen synthesis. An abnormal increase in the cells of the fetal suprarenal cortex leads to excessive androgen production, causing masculinization of female external genitalia.",
+                source: "Development of the Urinary System PDF, Page 51: 'Their size is due to the extensive size of the fetal cortex, which produces steroid precursors that are used by the placenta for estrogen synthesis... An abnormal increase in the cells of the suprarenal cortex results in excessive androgen production during the fetal period. This usually causes masculinization of the external genitalia in females.'"
+            },
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO6: Discuss the development of the urinary bladder and urethra from the urogenital sinus. Describe how wastes are handled in the fetus.",
+                question: "A 2-month-old male infant is brought to the clinic because his mother notices fluid leaking from his umbilicus, especially when he cries. Testing confirms the fluid is urine. This anomaly represents a complete failure of obliteration of which of the following embryologic structures?",
+                options: {
+                    A: "Allantois (Urachus)",
+                    B: "Mesonephric duct",
+                    C: "Metanephric blastema",
+                    D: "Paramesonephric duct",
+                    E: "Urorectal septum"
+                },
+                correctAnswer: "A",
+                rationale: "The allantois normally constricts and becomes a fibrous cord called the urachus. If the urachus remains completely open, it forms a urachal fistula, allowing urine to drain from the bladder out through the umbilicus.",
+                source: "Development of the Urinary System PDF, Page 51-52: 'The allantois constricts & becomes a fibrous cord called the urachus, which extends from the apex of the bladder to the umbilicus... A patent urachus occurs when the urachus remains completely open. Also known as a urachal fistula, this allows urine to drain from the bladder out through the umbilicus.'"
+            },
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO6: Discuss the development of the urinary bladder and urethra from the urogenital sinus. Describe how wastes are handled in the fetus.",
+                question: "During embryologic development, the cloaca is partitioned into a posterior anorectal canal and an anterior urogenital sinus. Which of the following structures is responsible for physically dividing this common cavity?",
+                options: {
+                    A: "Allantois",
+                    B: "Genital tubercle",
+                    C: "Mesonephric duct",
+                    D: "Ureteric bud",
+                    E: "Urorectal septum"
+                },
+                correctAnswer: "E",
+                rationale: "The urorectal septum extends between the allantois and hindgut, growing downward to divide the cloaca into the posterior anorectal canal and the anterior urogenital sinus.",
+                source: "Development of the Urinary System PDF, Page 51: 'The urorectal septum, which extends between the allantois & hindgut, divides the cloaca into a posterior (dorsal) anorectal canal & anterior (ventral) urogenital sinus'"
+            },
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO7: Discuss the embryological basis/cause, symptoms, clinical presentation, and treatment of congenital anomalies.",
+                question: "A 30-year-old man undergoes an abdominal CT scan for suspected appendicitis. The scan incidentally reveals that his kidneys are fused at their inferior poles and are situated abnormally low in the abdomen, at the level of the lower lumbar vertebrae. Which of the following anatomical structures mechanically prevented the normal ascent of this patient's kidneys?",
+                options: {
+                    A: "Common iliac artery",
+                    B: "Inferior mesenteric artery",
+                    C: "Renal vein",
+                    D: "Superior mesenteric artery",
+                    E: "Umbilical artery"
+                },
+                correctAnswer: "B",
+                rationale: "In a horseshoe kidney, the inferior poles fuse. As this fused kidney attempts to ascend from the pelvis into the abdomen, it gets caught on the root of the inferior mesenteric artery, preventing it from reaching the normal retroperitoneal position.",
+                source: "Development of the Urinary System PDF, Page 54: 'Horseshoe Kidneys – fusion of the inferior poles of the kidneys in the midline... Ascension is then limited because the kidney gets caught by the root of the inferior mesenteric artery and cannot rise to its retroperitoneal position.'"
+            },
+            {
+                section: "Development of the Urinary System",
+                fullLO: "LO7: Discuss the embryological basis/cause, symptoms, clinical presentation, and treatment of congenital anomalies.",
+                question: "A newborn male infant is noted to have severely wrinkled abdominal skin due to a complete absence of abdominal musculature. Physical examination also reveals bilateral undescended testes (cryptorchidism). An ultrasound of the urinary tract demonstrates massively dilated ureters and a distended bladder. This constellation of findings is most likely attributed to a developmental defect in which of the following?",
+                options: {
+                    A: "Ectoderm and neural crest",
+                    B: "Endoderm and splanchnic mesoderm",
+                    C: "Lateral plate and intermediate mesoderm",
+                    D: "Metanephric blastema alone",
+                    E: "Ureteric bud alone"
+                },
+                correctAnswer: "C",
+                rationale: "The patient has Prune Belly Syndrome, characterized by absent abdominal muscles, cryptorchidism, and urinary tract malformations. The suggested underlying embryologic defect involves the abnormal development of the lateral plate and intermediate mesoderm.",
+                source: "Development of the Urinary System PDF, Page 54-55: 'Prune Belly Syndrome... Characterized by: 1) partial or complete absence of the abdominal muscles, 2) cryptorchidism, and 3) urinary tract malformations... The exact cause of the disorder is unknown, but it has been suggested that the underlying defect is abnormal lateral plate & intermediate mesoderm development.'"
+            },
+
+            // --- Section 2: Renal Pathology ---
+            {
+                section: "Renal Pathology",
+                fullLO: "LO1: Compare and contrast nephrotic syndrome and nephritic syndrome.",
+                question: "A 45-year-old man presents to the clinic with severe swelling in his legs and face. Laboratory evaluation reveals a 24-hour urine protein excretion of 4.5 grams and a serum albumin level of 2.1 g/dL. Urinalysis demonstrates the presence of fatty casts. Which of the following best characterizes this patient's primary renal syndrome?",
+                options: {
+                    A: "Acute kidney injury",
+                    B: "Chronic glomerulonephritis",
+                    C: "Nephritic syndrome",
+                    D: "Nephrotic syndrome",
+                    E: "Rapidly progressive glomerulonephritis"
+                },
+                correctAnswer: "D",
+                rationale: "Nephrotic syndrome is characterized clinically by heavy proteinuria (>3.5 grams/24 hours), hypoalbuminemia, edema, hyperlipidemia, lipiduria, and fatty casts in the urine.",
+                source: "Pathology of the Glomerular System PDF, Slide 3: 'Nephrotic syndrome • Clinical and lab parameters – Heavy proteinuria (>3.5 grams/24 hours) – Hypoalbuminemia – Edema – Hyperlipidemia – Lipiduria – Fatty casts in the urine'"
+            },
+            {
+                section: "Renal Pathology",
+                fullLO: "LO1: Compare and contrast nephrotic syndrome and nephritic syndrome.",
+                question: "A 22-year-old woman comes to the emergency department complaining that her urine has turned the color of cola. Her blood pressure is 160/100 mm Hg. Urinalysis shows 1.5 grams of protein per 24 hours, numerous dysmorphic red blood cells, and prominent RBC casts. Her BUN and creatinine are elevated. Which of the following clinical syndromes does this patient most likely have?",
+                options: {
+                    A: "Asymptomatic hematuria",
+                    B: "Nephritic syndrome",
+                    C: "Nephrotic syndrome",
+                    D: "Pauci-immune vasculitis",
+                    E: "Tubulointerstitial nephritis"
+                },
+                correctAnswer: "B",
+                rationale: "Nephritic syndrome is characterized by hematuria, RBC casts in the urine, azotemia (elevated BUN and creatinine), hypertension, edema, and mild proteinuria (usually less than 2 g/24hr ).",
+                source: "Pathology of the Glomerular System PDF, Slide 4: 'Nephritic syndrome • Clinical and lab parameters – Hematuria – RBC casts in the urine – Azotemia (Elevated BUN and creatinine) – Hypertension – Edema – Mild proteinuria (usually less than 2 g / 24hr)'"
+            },
+            {
+                section: "Renal Pathology",
+                fullLO: "LO2: Compare and contrast glomerular diseases based on: Clinical Presentation, Etiology, Pathogenesis, Morphology (H&E, IF, EM)",
+                question: "A 50-year-old man presents with edema and heavy proteinuria. A renal biopsy is performed. Light microscopy reveals uniform, diffuse thickening of the glomerular capillary walls without evidence of cellular proliferation. Silver staining highlights irregular \"spikes\" protruding from the basement membrane. Immunofluorescence shows diffuse finely granular deposits of IgG and C3. Which of the following is the most likely pathogenesis of this patient's disease?",
+                options: {
+                    A: "Activation of the alternative complement cascade by C3NeF",
+                    B: "Anti-GBM COL4-A3 antigen antibodies",
+                    C: "In situ antibody-mediated response via anti-PLA2R antibodies",
+                    D: "T-cell mediated podocyte injury causing loss of polyanions",
+                    E: "Vascular deposition of advanced glycation end-products"
+                },
+                correctAnswer: "C",
+                rationale: "The findings of uniform capillary wall thickening, \"spikes\" on silver stain, and granular IgG/C3 describe Membranous glomerulopathy. In 85% of cases, this is a primary (idiopathic) disease caused by in situ antibody-mediated attack via anti-PLA2R antibodies.",
+                source: "Pathology of the Glomerular System PDF, Slides 24 & 33: 'Membranous glomerulopathy Morphology • Uniform, diffuse thickening of the glomerular capillary wall • No evidence of cellular proliferation • Presence of irregular “spikes” protruding from the GBM, best seen by silver stains' AND 'Pathogenesis In situ antibody-mediated; anti-PLA2R antibodies (idiopathic).'"
+            },
+            {
+                section: "Renal Pathology",
+                fullLO: "LO2: Compare and contrast glomerular diseases based on: Clinical Presentation, Etiology, Pathogenesis, Morphology (H&E, IF, EM)",
+                question: "A 35-year-old woman with a history of Hepatitis C infection presents with nephrotic syndrome. A renal biopsy shows diffusely enlarged, hypercellular glomeruli with a lobular appearance. The glomerular basement membrane is thickened and exhibits a \"tram-track\" or double-contour appearance. Electron microscopy reveals subendothelial electron-dense deposits. What is the most likely diagnosis?",
+                options: {
+                    A: "Dense deposit disease (MPGN Type II)",
+                    B: "Focal segmental glomerulosclerosis (FSGS)",
+                    C: "IgA Nephropathy",
+                    D: "Membranoproliferative glomerulonephritis (MPGN) Type I",
+                    E: "Minimal change disease"
+                },
+                correctAnswer: "D",
+                rationale: "MPGN Type I is associated with Hepatitis C and features enlarged, hypercellular glomeruli, mesangial proliferation leading to a lobular appearance, a \"tram-track\" duplicated basement membrane, and subendothelial deposits on EM. (Dense deposit disease / MPGN Type II features intra-membranous sausage-shaped deposits).",
+                source: "Pathology of the Glomerular System PDF, Slides 35, 36, 41: 'Membranoproliferative GN Morphology... Diffusely enlarged, hypercellular glomeruli (>50%)... shows a “duplicated” appearance:\"double-contour\" or \"tram-track”.' AND 'MPGN GN Type I... associated with cryoglobulinemia and hepatitis C... Electron microscopic – Subendothelial electron-dense deposits'"
+            },
+            {
+                section: "Renal Pathology",
+                fullLO: "LO3: Evaluate patient history, clinical findings, laboratory data, to include histology findings, and imaging studies to determine a possible diagnosis",
+                question: "A 5-year-old boy is brought to the clinic because of severe facial puffiness and leg swelling. Urinalysis reveals 4+ protein, no blood, and fatty casts. The child is started on corticosteroid therapy and his symptoms resolve dramatically within a week. If a renal biopsy had been performed prior to treatment, which of the following would be the most prominent finding on electron microscopy?",
+                options: {
+                    A: "Diffuse finely granular IgG deposits",
+                    B: "Linear deposition of IgG along the basement membrane",
+                    C: "Loss and fusion of podocyte foot processes",
+                    D: "Mesangial electron-dense deposits",
+                    E: "Subepithelial humps"
+                },
+                correctAnswer: "C",
+                rationale: "The clinical presentation (child with nephrotic syndrome) and dramatic response to corticosteroids is classic for Minimal Change Disease. Light microscopy and immunofluorescence are normal, but electron microscopy demonstrates uniform and diffuse effacement (loss/fusion) of podocyte foot processes.",
+                source: "Pathology of the Glomerular System PDF, Slides 7 & 8: 'Minimal change disease - Clinical • Most frequent cause of nephrotic syndrome in children... dramatic response to corticosteroid therapy' AND 'Electron microscopy – Uniform and diffuse effacement of foot processes in the visceral epithelial cells'"
+            },
+            {
+                section: "Renal Pathology",
+                fullLO: "LO3: Evaluate patient history, clinical findings, laboratory data, to include histology findings, and imaging studies to determine a possible diagnosis",
+                question: "A 22-year-old man presents with visible hematuria one day after recovering from a mild upper respiratory tract infection. He reports having similar episodes in the past that resolved spontaneously. His blood pressure is normal, and renal function tests are stable. A kidney biopsy is performed, and immunofluorescence microscopy demonstrates striking granular deposits localized exclusively to the mesangium. Which of the following is the most likely diagnosis?",
+                options: {
+                    A: "Acute post-infectious glomerulonephritis",
+                    B: "Diabetic nephropathy",
+                    C: "Focal segmental glomerulosclerosis",
+                    D: "IgA nephropathy",
+                    E: "Membranous glomerulopathy"
+                },
+                correctAnswer: "D",
+                rationale: "IgA nephropathy is the most common glomerulonephritis globally and classically presents as recurrent microscopic or macroscopic (visible) hematuria, often coincident with or immediately following a respiratory infection. IF specifically shows mesangial deposits of IgA.",
+                source: "Pathology of the Glomerular System PDF, Slides 64 & 70: 'IgA nephropathy • The most common form of glomerulonephritis in the world. • Presents usually with hematuria, microscopic or intermittent.' AND 'Clinical Presentation Recurrent hematuria or proteinuria... Immunofluorescence Mesangial deposits of IgA'"
+            },
+
+            // --- Section 3: Renal Blood Flow and GFR ---
+            {
+                section: "Renal Blood Flow and GFR",
+                fullLO: "LO1: Explain the selectivity of the filtration barrier, and describe the consequence of a breakdown.",
+                question: "A 40-year-old man is diagnosed with a glomerular disease characterized by the loss of polyanions from the filtration barrier. As a result of this loss of negative charge, which of the following substances will abnormally appear in the patient's urine in large quantities?",
+                options: {
+                    A: "Albumin",
+                    B: "Glucose",
+                    C: "Red blood cells",
+                    D: "Sodium ions",
+                    E: "Urea"
+                },
+                correctAnswer: "A",
+                rationale: "The glomerular filtration barrier has both a size and a charge barrier. Normally, water, ions, glucose, and urea pass freely. Proteins larger than albumin do not pass. Albumin is restricted largely because of the negative charge (polyanions) of the filtration barrier. Loss of this charge barrier allows albumin to slip through, resulting in proteinuria (nephrosis). Red blood cells do not pass unless the physical structure (size barrier/endothelium) breaks down completely.",
+                source: "Renal Blood Flow and GFR PDF, Slides 12-14: 'What Can or Cannot Pass through the Glomerular Filtration Barrier? • Blood cells do NOT pass. • H2O, Na+, K+, Cl-, H+, Ca2+, Mg2+, urea, creatinine, amino acids, and glucose do pass freely... Effect of Size and Charge on Filterability... There is a charge and a size barrier'"
+            },
+            {
+                section: "Renal Blood Flow and GFR",
+                fullLO: "LO1: Explain the selectivity of the filtration barrier, and describe the consequence of a breakdown.",
+                question: "A 7-year-old child develops massive proteinuria and diffuse edema following a breakdown of the glomerular filtration barrier. Which of the following best describes the direct clinical consequence of this massive loss of plasma proteins into the urine?",
+                options: {
+                    A: "Decreased tubular secretion of creatinine",
+                    B: "Increased plasma oncotic pressure",
+                    C: "Movement of fluid out of the vascular space (Edema)",
+                    D: "Pre-renal acute kidney injury",
+                    E: "Severe hypercalcemia"
+                },
+                correctAnswer: "C",
+                rationale: "Breakdown of the filtration barrier leads to massive loss of plasma proteins (proteinuria), which causes low plasma albumin (hypoalbuminemia). This decreases plasma oncotic pressure, resulting in the movement of fluid out of the vascular space into the interstitium, causing edema (Nephrosis).",
+                source: "Renal Blood Flow and GFR PDF, Slides 14 & 16: 'Consequences of breakdown of the filtration barrier: Nephrosis... Low plasma albumin = Movement of fluid out of the vascular space -> EDEMA'"
+            },
+            {
+                section: "Renal Blood Flow and GFR",
+                fullLO: "LO2: Diagram the capillary forces involved in forming the glomerular ultrafiltrate and the interaction between them.",
+                question: "A patient presents with severe flank pain due to a large kidney stone obstructing the right ureter. This obstruction causes a back-up of fluid, directly increasing the hydrostatic pressure within Bowman's capsule (P_bow). According to the Starling forces governing glomerular filtration, an isolated increase in Bowman's capsule hydrostatic pressure will result in which of the following?",
+                options: {
+                    A: "Decreased net filtration pressure and decreased GFR",
+                    B: "Decreased plasma colloid osmotic pressure",
+                    C: "Increased glomerular hydrostatic pressure",
+                    D: "Increased net filtration pressure and increased GFR",
+                    E: "No change in net filtration pressure"
+                },
+                correctAnswer: "A",
+                rationale: "Net filtration pressure is determined by the forces favoring filtration (Glomerular hydrostatic pressure) minus the forces opposing filtration (Bowman's capsule hydrostatic pressure + Glomerular colloid osmotic pressure). An increase in Bowman's capsule pressure (opposing force) reduces the net filtration pressure, thereby decreasing GFR.",
+                source: "Renal Blood Flow and GFR PDF, Slide 23: 'Determinants of GFR... Net filtration pressure = Glomerular hydrostatic pressure - Bowman's capsule pressure - Glomerular oncotic pressure'"
+            },
+            {
+                section: "Renal Blood Flow and GFR",
+                fullLO: "LO2: Diagram the capillary forces involved in forming the glomerular ultrafiltrate and the interaction between them.",
+                question: "A physiologist is calculating the net driving force promoting glomerular filtration rate (GFR) in a laboratory animal. Measurements show the glomerular capillary hydrostatic pressure is 60 mm Hg, Bowman's capsule hydrostatic pressure is 30 mm Hg, glomerular capillary oncotic pressure is 20 mm Hg, and Bowman's capsule oncotic pressure is 10 mm Hg. What is the net filtration pressure?",
+                options: {
+                    A: "0 mm Hg",
+                    B: "+10 mm Hg",
+                    C: "+20 mm Hg",
+                    D: "+40 mm Hg",
+                    E: "+60 mm Hg"
+                },
+                correctAnswer: "C",
+                rationale: "The net filtration pressure equation incorporates all four Starling forces. Net Pressure = (Forces favoring filtration) - (Forces opposing filtration). Favoring = Capillary hydrostatic (60) + Bowman's oncotic (10) = 70. Opposing = Bowman's hydrostatic (30) + Capillary oncotic (20) = 50. Net = 70 - 50 = +20 mm Hg.",
+                source: "Renal Blood Flow and GFR PDF, Slide 28: 'Given the above data. The net driving force promoting GFR would be expected to be? ... (60 + 10 (70)) – (30 + 20 (50)) = 70-50 = +20'"
+            },
+            {
+                section: "Renal Blood Flow and GFR",
+                fullLO: "LO3: Describe the effects of changes in afferent and efferent arteriolar resistances on renal blood flow and GFR.",
+                question: "During a severe hemorrhage, a patient's sympathetic nervous system strongly activates, causing marked vasoconstriction of the afferent arterioles in the kidneys. Which of the following combinations best describes the resulting effects on renal blood flow (RBF) and glomerular filtration rate (GFR)?",
+                options: {
+                    A: "Decreased RBF and decreased GFR",
+                    B: "Decreased RBF and increased GFR",
+                    C: "Increased RBF and decreased GFR",
+                    D: "Increased RBF and increased GFR",
+                    E: "Unchanged RBF and decreased GFR"
+                },
+                correctAnswer: "A",
+                rationale: "An increase in afferent arteriolar resistance restricts blood from entering the glomerulus. This leads to a decrease in total renal blood flow (RBF) and a drop in glomerular capillary hydrostatic pressure, which consequently decreases GFR.",
+                source: "Renal Blood Flow and GFR PDF, Slide 36: 'Changes in renal vascular resistance... increase in afferent -> RBF[down arrow], GFR [down arrow]'"
+            },
+            {
+                section: "Renal Blood Flow and GFR",
+                fullLO: "LO3: Describe the effects of changes in afferent and efferent arteriolar resistances on renal blood flow and GFR.",
+                question: "A pharmacological agent is administered that selectively causes a decrease in the resistance of the efferent arteriole (efferent vasodilation). Assuming all other factors remain constant, what effect will this selective dilation have on the kidney?",
+                options: {
+                    A: "Decreased RBF and decreased GFR",
+                    B: "Decreased RBF and increased GFR",
+                    C: "Increased RBF and decreased GFR",
+                    D: "Increased RBF and increased GFR",
+                    E: "Unchanged RBF and increased GFR"
+                },
+                correctAnswer: "C",
+                rationale: "A decrease in efferent arteriolar resistance opens the \"exit\" of the glomerular capillary. This reduces total renal resistance, allowing Renal Blood Flow (RBF) to increase. However, because blood can exit the glomerulus more easily, the hydrostatic pressure within the glomerular capillaries drops, leading to a decrease in GFR.",
+                source: "Renal Blood Flow and GFR PDF, Slide 36: 'Changes in renal vascular resistance... decrease in efferent -> RBF [up arrow], GFR[down arrow]'"
+            },
+            {
+                section: "Renal Blood Flow and GFR",
+                fullLO: "LO4: Define the myogenic and tubuloglomerular feedback (TGF) components in the autoregulation of RBF and GFR, and explain their mechanisms.",
+                question: "A healthy 25-year-old man experiences a sudden increase in systemic arterial blood pressure while exercising. Despite this systemic change, his glomerular filtration rate remains relatively constant. This autoregulation is largely mediated by a mechanism that utilizes specialized cells acting as a NaCl sensor. Which of the following structures acts as this primary sensor?",
+                options: {
+                    A: "Afferent arteriole smooth muscle",
+                    B: "Bowman's capsule parietal cells",
+                    C: "Efferent arteriole endothelium",
+                    D: "Macula densa",
+                    E: "Proximal convoluted tubule"
+                },
+                correctAnswer: "D",
+                rationale: "The two mechanisms of autoregulation focused on the afferent arteriole are the myogenic mechanism and tubuloglomerular feedback (TGF). TGF relies specifically on the macula densa, which serves as a sensor for NaCl delivery in the distal nephron, communicating with the afferent arteriole to adjust resistance and maintain GFR.",
+                source: "Renal Blood Flow and GFR PDF, Slide 40: 'Autoregulation of RBF and GFR... The mechanisms (2) are focused on the afferent arteriole. - myogenic mechanism... - tubuloglomerular feedback - uses the macula dense as a NaCl sensor'"
+            },
+            {
+                section: "Renal Blood Flow and GFR",
+                fullLO: "LO4: Define the myogenic and tubuloglomerular feedback (TGF) components in the autoregulation of RBF and GFR, and explain their mechanisms.",
+                question: "A patient sustains massive trauma resulting in severe hypovolemic shock. His systolic blood pressure falls precipitously to 40 mm Hg. Under these extreme conditions, the renal autoregulatory mechanisms fail to maintain GFR. Which of the following best explains why glomerular filtration completely ceases in this patient, resulting in acute kidney injury (AKI)?",
+                options: {
+                    A: "The efferent arteriole massively dilates.",
+                    B: "The macula densa suppresses renin release completely.",
+                    C: "The systemic arterial pressure is insufficient to generate glomerular hydrostatic pressure.",
+                    D: "The tubules actively secrete massive amounts of proteins to block filtration.",
+                    E: "The ureters reflexively undergo intense spasms."
+                },
+                correctAnswer: "C",
+                rationale: "Glomerular filtration requires significant arterial (hydrostatic) pressure to separate plasma from blood. The autoregulatory range only functions down to a certain blood pressure (usually ~80-90 mmHg). If systemic pressure drops significantly below this (e.g., severe hemorrhage), there is no glomerular pressure, resulting in no filtration, which leads to AKI.",
+                source: "Renal Blood Flow and GFR PDF, Slides 26 & 64: 'If you remember nothing else….. Glomerular filtration requires significant arterial pressure!!!' and 'What happens as arterial pressure falls? Lower [arrows pointing below autoregulatory range] NO GLOMERULAR PRESSURE = NO FILTRATION = AKI'"
+            },
+            {
+                section: "Renal Blood Flow and GFR",
+                fullLO: "LO5: Explain the role of angiotensin II to protect against decreased GFR.",
+                question: "A patient experiences mild volume depletion, leading to physiological activation of the renin-angiotensin system. Angiotensin II acts as a \"guardian of filtration\" in this state. It maintains glomerular filtration pressure primarily by preferentially inducing vasoconstriction in which of the following vascular structures?",
+                options: {
+                    A: "Afferent arteriole",
+                    B: "Arcuate artery",
+                    C: "Efferent arteriole",
+                    D: "Renal vein",
+                    E: "Vasa recta"
+                },
+                correctAnswer: "C",
+                rationale: "When the renin-angiotensin system is activated physiologically, Angiotensin II preferentially constricts the efferent arteriole. This increases the resistance at the exit of the glomerulus, thereby maintaining glomerular capillary hydrostatic pressure and preventing GFR from dropping significantly.",
+                source: "Renal Blood Flow and GFR PDF, Slide 48: 'Overall effect of increased angiotensin II when the RAS is activated physiologically... ANG II Preferentially constricts Efferent arteriole. Works to maintain pressure in glom capillaries and therefore GFR'"
+            },
+            {
+                section: "Renal Blood Flow and GFR",
+                fullLO: "LO5: Explain the role of angiotensin II to protect against decreased GFR.",
+                question: "The preferential constriction of the efferent arteriole by Angiotensin II maintains GFR but decreases overall renal blood flow. As a direct result of these combined effects, which of the following parameters is significantly increased, thereby greatly enhancing sodium and water reabsorption in the proximal tubule?",
+                options: {
+                    A: "Bowman's capsule hydrostatic pressure",
+                    B: "Filtration fraction",
+                    C: "Peritubular capillary hydrostatic pressure",
+                    D: "Renal plasma flow",
+                    E: "Tubular fluid flow rate"
+                },
+                correctAnswer: "B",
+                rationale: "Because Ang II maintains GFR while decreasing Renal Plasma Flow (RPF), the ratio of GFR/RPF (the Filtration Fraction) increases. An increased filtration fraction means more fluid is filtered out, leaving behind a higher concentration of plasma proteins in the peritubular capillaries. This elevated peritubular oncotic pressure greatly increases the reabsorptive force in the proximal tubule.",
+                source: "Renal Blood Flow and GFR PDF, Slide 49: 'Effect of Angiotensin II on Filtration Fraction... when Ang II is increased, RBF will decrease with little to no decrease in GFR. Therefore, - Angiotensin II increases Filtration Fraction... This effect of filtration fraction on oncotic pressure greatly increases the reabsorptive force in the proximal tubule.'"
+            },
+
+            // --- Section 4: Tubular Reabsorption ---
+            {
+                section: "Tubular Reabsorption",
+                fullLO: "LO1: Define the concept of transport maximum (Tm) in regards to glucose transport.",
+                question: "A 50-year-old woman is evaluated for polyuria. Laboratory tests reveal a blood glucose level of 250 mg/dL, and a urinalysis tests positive for heavy glucosuria. Under completely normal physiological conditions (blood glucose ~90 mg/dL), glucose is freely filtered and its renal clearance is zero. Which of the following best explains why glucose appears in this patient's urine?",
+                options: {
+                    A: "Glucose is actively secreted by the distal convoluted tubule.",
+                    B: "High glucose concentrations damage the glomerular filtration barrier.",
+                    C: "The filtered load of glucose has exceeded the transport maximum (Tm) of the proximal tubule carriers.",
+                    D: "The paracellular pathway in the proximal tubule becomes highly permeable to glucose.",
+                    E: "The volume of filtered water limits the time available for glucose diffusion."
+                },
+                correctAnswer: "C",
+                rationale: "Glucose is normally 100% reabsorbed in the proximal tubule via active co-transport. However, this carrier-mediated transport has a specific Transport Maximum (Tm), which reflects the limit of transport capacity. When blood glucose exceeds approximately 200 mg/dL, the filtered load surpasses the Tm, saturating the carriers, and the excess glucose spills into the urine.",
+                source: "Basic Mechanisms of Tubular Reabsorption and Secretion PDF, Slides 52 & 56: 'Transport Maximum (Tm) ... Tm reflects the limit of transport capacity for specific solutes.' and 'Relations Among Filtered Load of Glucose... Blood glucose At least 200mg/dL[shows Threshold where Excretion begins]'"
+            },
+            {
+                section: "Tubular Reabsorption",
+                fullLO: "LO1: Define the concept of transport maximum (Tm) in regards to glucose transport.",
+                question: "A physiology student is reviewing the renal handling of glucose. He notes that the renal clearance of glucose is normally 0.0 L/hr. This relies entirely on secondary active transport mechanisms located in the renal tubules. The physiological concept of Transport Maximum (Tm) for glucose is a direct result of which of the following cellular properties?",
+                options: {
+                    A: "Depletion of intracellular ATP stores",
+                    B: "Downregulation of aquaporin channels",
+                    C: "Reversal of the Na+/K+ ATPase pump",
+                    D: "Saturation of specific carrier proteins in the tubular cell membrane",
+                    E: "Sloughing of the brush border microvilli"
+                },
+                correctAnswer: "D",
+                rationale: "Reabsorption of glucose utilizes facilitated diffusion and co-transport via carrier proteins. Because a finite number of these proteins exist on the tubular cell membranes (brush border), they can become fully occupied or saturated. This saturation point dictates the Transport Maximum (Tm).",
+                source: "Basic Mechanisms of Tubular Reabsorption and Secretion PDF, Slides 45 & 50: 'How do you get across a cell membrane?... Facilitated Diffusion... uses a carrier (also called carrier-mediated diffusion)... Many substances use carrier proteins' AND 'Transport Maximum (Tm)... Tm reflects the limit of transport capacity for specific solutes.'"
+            },
+            {
+                section: "Tubular Reabsorption",
+                fullLO: "LO2: Qualitatively describe the forces that determine movement of reabsorbed fluid from interstitium into peritubular capillaries.",
+                question: "A physiologist is analyzing fluid exchange across the peritubular capillaries in the renal cortex. After massive amounts of water and solutes are transported out of the proximal tubule into the renal interstitium, this fluid must be drawn into the peritubular capillaries to complete reabsorption. Which of the following forces provides the primary driving pressure to pull this fluid from the interstitium into the peritubular capillary?",
+                options: {
+                    A: "High capillary hydrostatic pressure",
+                    B: "High interstitial fluid hydrostatic pressure",
+                    C: "High plasma colloid osmotic (oncotic) pressure",
+                    D: "High tubular lumen hydrostatic pressure",
+                    E: "Low interstitial fluid colloid osmotic pressure"
+                },
+                correctAnswer: "C",
+                rationale: "Because 20% of plasma volume (but virtually no protein) is filtered at the glomerulus, the blood entering the peritubular capillaries has a significantly elevated concentration of plasma proteins. This creates a high plasma colloid osmotic (oncotic) pressure, which serves as the primary force drawing fluid from the interstitium into the peritubular capillaries.",
+                source: "Renal Blood Flow PDF, Slide 21; Basic Mechanisms of Tubular Reabsorption and Secretion PDF, Slides 62, 63: 'Determinants of Capillary Filtration... Plasma Colloid Osmotic Pressure... Proximal Tubular and Peritubular Capillary Reabsorption. Capillary hydrostatic pressure and oncotic pressure remain important determinants of reabsorption... forces set up by GFR/filtration fraction'"
+            },
+            {
+                section: "Tubular Reabsorption",
+                fullLO: "LO2: Qualitatively describe the forces that determine movement of reabsorbed fluid from interstitium into peritubular capillaries.",
+                question: "A patient receives a drug that selectively dilates the efferent arteriole, greatly increasing the hydrostatic pressure (Pc) transmitted downstream into the peritubular capillaries. Assuming all other factors remain constant, what is the most likely effect on the reabsorption of fluid from the interstitium into the peritubular capillaries?",
+                options: {
+                    A: "Reabsorption will decrease, leading to potential tubular backleak.",
+                    B: "Reabsorption will increase due to higher capillary flow.",
+                    C: "Reabsorption will remain unchanged because oncotic pressure is the only driving force.",
+                    D: "The interstitial fluid pressure will drop to zero.",
+                    E: "Water channels (aquaporins) will rapidly downregulate."
+                },
+                correctAnswer: "A",
+                rationale: "Capillary hydrostatic pressure (Pc) is a force that opposes reabsorption (it favors filtration out of the capillary). If peritubular capillary hydrostatic pressure increases, net reabsorption into the capillary decreases. The fluid remaining in the interstitium can build up and leak back into the tubular lumen (backleak).",
+                source: "Basic Mechanisms of Tubular Reabsorption and Secretion PDF, Slide 62: 'Proximal Tubular and Peritubular Capillary Reabsorption... Decreased Reabsorption ->[shows increased Pc resulting in Backleak]'"
+            },
+            {
+                section: "Tubular Reabsorption",
+                fullLO: "LO3: Be able to describe the mechanisms of water reabsorption and the water permeability characteristics of each tubular segment and to describe the renal handling of proteins and peptides and organic nutrients.",
+                question: "A healthy individual drinks two liters of water, completely suppressing their antidiuretic hormone (ADH) levels. Despite the absence of ADH, the largest absolute volume of filtered water is still obligatorily reabsorbed from the tubular fluid. This high-capacity, isosmotic reabsorption of water primarily occurs in which of the following nephron segments?",
+                options: {
+                    A: "Cortical collecting duct",
+                    B: "Early distal tubule",
+                    C: "Medullary collecting duct",
+                    D: "Proximal convoluted tubule",
+                    E: "Thick ascending limb"
+                },
+                correctAnswer: "D",
+                rationale: "The proximal convoluted tubule is the \"champion of reabsorption\" and performs high-capacity transport of solute and water, taking up ~65-70% of the filtered load. This process is isosmotic and occurs independently of ADH. (The late distal tubule and collecting ducts rely on ADH for water reabsorption).",
+                source: "Basic Mechanisms of Tubular Reabsorption and Secretion PDF, Slides 65 & 69: 'Proximal Tubular Reabsorption... High capacity transport of solute and water, ~65-70 % of the filtered load... Isosmotic... PT reabsorption=lots of isotonic fluid!'"
+            },
+            {
+                section: "Tubular Reabsorption",
+                fullLO: "LO3: Be able to describe the mechanisms of water reabsorption and the water permeability characteristics of each tubular segment and to describe the renal handling of proteins and peptides and organic nutrients.",
+                question: "A new pharmacological diuretic is designed to completely block the Na+/K+/2Cl- co-transporter. To exert its maximum effect on solute excretion, this drug must target the specific segment of the nephron where this transporter is located. Which of the following describes the normal water permeability characteristic of this targeted segment?",
+                options: {
+                    A: "It is freely permeable to water only in the presence of ADH.",
+                    B: "It is freely permeable to water only in the absence of ADH.",
+                    C: "It is highly permeable to water at all times.",
+                    D: "It is essentially impermeable to water.",
+                    E: "It is permeable to water but impermeable to urea."
+                },
+                correctAnswer: "D",
+                rationale: "The Na+/K+/2Cl- co-transporter (NKCC2) is located in the thick ascending limb of the loop of Henle (the diluting segment). A defining characteristic of the thick ascending limb is that it actively transports solutes out of the lumen but is strictly impermeable to water.",
+                source: "Basic Mechanisms of Tubular Reabsorption and Secretion PDF, Slide 79: 'Loop of Henle Thick ascending segment (Diluting segment)... Na+/ K+ /2Cl- transporter... Impermeable to water'"
+            }
+        ];
+
+        // --- Core Logic ---
+        const quizRoot = document.getElementById('quiz-root');
+        const themeSelect = document.getElementById('theme-select');
+        const pinBtn = document.getElementById('pin-btn');
+        const mainHeader = document.getElementById('main-header');
+        const sectionNav = document.getElementById('section-nav');
+        const customBuilder = document.getElementById('custom-builder');
+        const rootElements = document.documentElement;
+
+        let isRevealed = false;
+
+        function toggleAllLOs() {
+            isRevealed = !isRevealed;
+            const btn = document.getElementById('reveal-all-btn');
+            btn.textContent = isRevealed ? "Hide Learning Objectives" : "Show Learning Objectives";
+            
+            document.querySelectorAll('.lo-box').forEach(box => {
+                box.style.display = isRevealed ? 'block' : 'none';
+            });
+        }
+
+        function initQuiz() {
+            let currentSection = "";
+            let sectionIndex = 0;
+            
+            quizData.forEach((item, index) => {
+                if (item.section !== currentSection) {
+                    currentSection = item.section;
+                    
+                    const sectionId = 'sec-' + sectionIndex;
+                    
+                    const sectionHeader = document.createElement('h2');
+                    sectionHeader.className = 'section-header';
+                    sectionHeader.id = sectionId;
+                    sectionHeader.textContent = currentSection;
+                    quizRoot.appendChild(sectionHeader);
+
+                    const navBtn = document.createElement('button');
+                    let btnText = currentSection;
+                    if (btnText.includes("Development of the Urinary System")) btnText = "Urinary System Dev";
+                    if (btnText.includes("Renal Pathology")) btnText = "Renal Pathology";
+                    if (btnText.includes("Renal Blood Flow and GFR")) btnText = "RBF and GFR";
+                    if (btnText.includes("Tubular Reabsorption")) btnText = "Tubular Reabsorption";
+                    
+                    navBtn.textContent = btnText;
+                    navBtn.onclick = () => {
+                        document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+                    };
+                    sectionNav.appendChild(navBtn);
+
+                    sectionIndex++;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-card-${index}`;
+
+                const loBox = document.createElement('div');
+                loBox.className = 'lo-box';
+                loBox.id = `lo-${index}`;
+                loBox.innerHTML = item.fullLO;
+                card.appendChild(loBox);
+
+                const qText = document.createElement('div');
+                qText.className = 'question-text';
+                qText.innerHTML = `${index + 1}. ${item.question}`;
+                card.appendChild(qText);
+
+                const optionsGrid = document.createElement('div');
+                optionsGrid.className = 'options-grid';
+
+                for (const[key, value] of Object.entries(item.options)) {
+                    const label = document.createElement('label');
+                    label.className = 'option-label';
+                    
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = key;
+
+                    const span = document.createElement('span');
+                    span.innerHTML = `${key}. ${value}`;
+
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    optionsGrid.appendChild(label);
+                }
+                card.appendChild(optionsGrid);
+
+                const btn = document.createElement('button');
+                btn.className = 'btn-check';
+                btn.textContent = 'Check Answer';
+                btn.onclick = () => checkAnswer(index);
+                card.appendChild(btn);
+
+                const feedback = document.createElement('div');
+                feedback.className = 'feedback';
+                feedback.id = `feedback-${index}`;
+                card.appendChild(feedback);
+
+                quizRoot.appendChild(card);
+            });
+
+            const returnContainer = document.createElement('div');
+            returnContainer.style.textAlign = 'center';
+            returnContainer.style.marginTop = '2rem';
+            
+            const returnBtn = document.createElement('a');
+            returnBtn.href = 'https://ibecerramcg.github.io/GI-GU-ENDO-Practice-Quizzes/';
+            returnBtn.className = 'btn-link';
+            returnBtn.textContent = '← Return to Quiz Directory';
+            
+            returnContainer.appendChild(returnBtn);
+            quizRoot.appendChild(returnContainer);
+
+            const savedTheme = localStorage.getItem('quizTheme') || 'dark';
+            themeSelect.value = savedTheme;
+            changeTheme(savedTheme);
+
+            const savedPinState = localStorage.getItem('headerPinned');
+            toggleHeader(savedPinState !== 'false');
+        }
+
+        function checkAnswer(index) {
+            const selected = document.querySelector(`input[name="question-${index}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${index}`);
+            const data = quizData[index];
+
+            if (!selected) {
+                alert("Please select an answer.");
+                return;
+            }
+
+            const isCorrect = selected.value === data.correctAnswer;
+            
+            let html = `<span class="feedback-header">${isCorrect ? "Correct!" : "Incorrect"}</span>`;
+            if (!isCorrect) {
+                html += `<div>The correct answer is <strong>${data.correctAnswer}</strong>.</div>`;
+            }
+            
+            html += `<div class="rationale"><strong>Rationale:</strong> ${data.rationale}</div>`;
+            html += `<div class="source"><strong>Source:</strong> ${data.source}</div>`;
+
+            feedbackEl.innerHTML = html;
+            feedbackEl.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedbackEl.style.display = 'block';
+        }
+
+        function changeTheme(themeName) {
+            localStorage.setItem('quizTheme', themeName);
+            
+            if (themeName === 'custom') {
+                rootElements.removeAttribute('data-theme');
+                customBuilder.classList.add('active');
+                loadCustomTheme();
+            } else {
+                rootElements.setAttribute('data-theme', themeName);
+                customBuilder.classList.remove('active');
+                rootElements.removeAttribute('style');
+            }
+        }
+
+        function updateCustomTheme() {
+            const bg = document.getElementById('color-bg').value;
+            const card = document.getElementById('color-card').value;
+            const text = document.getElementById('color-text').value;
+            const accent = document.getElementById('color-accent').value;
+
+            rootElements.style.setProperty('--bg-body', bg);
+            rootElements.style.setProperty('--bg-header', bg);
+            rootElements.style.setProperty('--bg-card', card);
+            rootElements.style.setProperty('--highlight-bg', card);
+            rootElements.style.setProperty('--text-main', text);
+            rootElements.style.setProperty('--text-accent', accent);
+            rootElements.style.setProperty('--button-bg', accent);
+            rootElements.style.setProperty('--button-text', bg);
+            rootElements.style.setProperty('--border-color', accent + '40');
+
+            const customColors = { bg, card, text, accent };
+            localStorage.setItem('customThemeColors', JSON.stringify(customColors));
+        }
+
+        function loadCustomTheme() {
+            const savedColors = JSON.parse(localStorage.getItem('customThemeColors'));
+            if (savedColors) {
+                document.getElementById('color-bg').value = savedColors.bg;
+                document.getElementById('color-card').value = savedColors.card;
+                document.getElementById('color-text').value = savedColors.text;
+                document.getElementById('color-accent').value = savedColors.accent;
+                updateCustomTheme();
+            } else {
+                updateCustomTheme();
+            }
+        }
+
+        function toggleHeader(forceState) {
+            const isCurrentlyPinned = !mainHeader.classList.contains('unpinned');
+            const newState = (typeof forceState === 'boolean') ? forceState : !isCurrentlyPinned;
+
+            if (newState) {
+                mainHeader.classList.remove('unpinned');
+                pinBtn.classList.add('pin-active');
+                localStorage.setItem('headerPinned', 'true');
+            } else {
+                mainHeader.classList.add('unpinned');
+                pinBtn.classList.remove('pin-active');
+                localStorage.setItem('headerPinned', 'false');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initQuiz);
+
+    </script>
+</body>
+</html>
